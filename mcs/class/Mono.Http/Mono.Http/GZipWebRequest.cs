@@ -164,6 +164,9 @@ namespace Mono.Http
 		public override WebResponse EndGetResponse (IAsyncResult asyncResult)
 		{
 			WebResponse response = request.EndGetResponse (asyncResult);
+
+			Console.WriteLine("EndGetResponse encoding={0}", response.Headers["Content-Encoding"]);
+
 			bool compressed = (String.Compare (response.Headers ["Content-Encoding"], "gzip", true) == 0);
 			if (!compressed)
 				return response;

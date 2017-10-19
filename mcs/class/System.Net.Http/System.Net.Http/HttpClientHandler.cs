@@ -385,7 +385,9 @@ namespace System.Net.Http
 						wrequest.ContentLength = 0;
 					}
 
+					Console.WriteLine("Awaiting response");
 					wresponse = (HttpWebResponse)await wrequest.GetResponseAsync ().ConfigureAwait (false);
+					Console.WriteLine("Got response");
 				}
 			} catch (WebException we) {
 				if (we.Status != WebExceptionStatus.RequestCanceled)
