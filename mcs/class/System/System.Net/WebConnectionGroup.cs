@@ -151,6 +151,7 @@ namespace System.Net
 			if (cnc != null) {
 				created = false;
 				PrepareSharingNtlm (cnc.Connection, request);
+				Console.WriteLine($"{cnc.Connection.GetHashCode():X4} Reusing idle connection");
 				return cnc.Connection;
 			}
 
@@ -158,11 +159,13 @@ namespace System.Net
 				created = true;
 				cnc = new ConnectionState (this);
 				connections.AddFirst (cnc);
+				Console.WriteLine($"{cnc.Connection.GetHashCode():X4} Creating a new connection");
 				return cnc.Connection;
 			}
 
 			created = false;
 			cnc = connections.Last.Value;
+			Console.WriteLine($"{cnc.Connection.GetHashCode():X4} At limit, yielding a busy connection");
 			connections.Remove (cnc);
 			connections.AddFirst (cnc);
 			return cnc.Connection;
@@ -223,10 +226,13 @@ namespace System.Net
 			}
 
 			// Did we find anything that can be closed?
-			if (connectionsToClose == null)
+			if (connectionsToClose == null) {
+				Console.WriteLine("Not closing any timed-out connections");
 				return recycled;
+			}
 
 			// Ok, let's get rid of these!
+			Console.WriteLine("Closing {0} timed-out connection(s)", connectionsToClose.Count);
 			foreach (var cnc in connectionsToClose)
 				cnc.Close (false);
 

@@ -772,6 +772,7 @@ namespace System.Net
 							Console.WriteLine ("WARNING: An HttpWebRequest was added to the ConnectionGroup queue because the connection limit was reached.");
 						}
 #endif
+						Console.WriteLine($"{GetHashCode():X4} Enqueueing pending request");
 						queue.Enqueue (request);
 					}
 				}
@@ -784,6 +785,7 @@ namespace System.Net
 		{
 			lock (queue) {
 				if (queue.Count > 0) {
+					Console.WriteLine($"{GetHashCode():X4} Starting queued request");
 					SendRequest ((HttpWebRequest) queue.Dequeue ());
 				}
 			}
@@ -806,14 +808,17 @@ namespace System.Net
 
 				if ((socket != null && !socket.Connected) ||
 				   (!keepAlive || (cncHeader != null && cncHeader.IndexOf ("close", StringComparison.Ordinal) != -1))) {
+				   	Console.WriteLine("${GetHashCode():X4} Connection closed, not flushing queue");
 					Close (false);
 				}
 
 				state.SetIdle ();
 				if (priority_request != null) {
+				   	Console.WriteLine("${GetHashCode():X4} Sending priority request");
 					SendRequest (priority_request);
 					priority_request = null;
 				} else {
+				   	Console.WriteLine("${GetHashCode():X4} Sending queued request");
 					SendNext ();
 				}
 			}
@@ -1123,6 +1128,8 @@ namespace System.Net
 		internal void Close (bool sendNext)
 		{
 			lock (this) {
+			   	Console.WriteLine("${GetHashCode():X4} Closed with {queue.Count} entries in queue");
+
 				if (Data != null && Data.request != null && Data.request.ReuseConnection) {
 					Data.request.ReuseConnection = false;
 					return;

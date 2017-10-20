@@ -211,6 +211,7 @@ namespace System.Net
 				if (contentLength == Int64.MaxValue)
 					contentLength = 0;
 				nextReadCalled = true;
+				Console.WriteLine("ForceCompletion calling NextRead");
 				cnc.NextRead ();
 			}
 		}
@@ -220,13 +221,19 @@ namespace System.Net
 			bool nrc = nextReadCalled;
 			if (!nrc && readBufferSize - readBufferOffset == contentLength) {
 				nextReadCalled = true;
+				Console.WriteLine("CheckComplete calling NextRead");
 				cnc.NextRead ();
+			} else if (!nrc) {
+				Console.WriteLine("CheckComplete not calling NextRead because content remains");
+			} else {
+				Console.WriteLine("CheckComplete not calling NextRead because already called");
 			}
 		}
 
 		internal void ReadAll ()
 		{
 			if (!isRead || read_eof || totalRead >= contentLength || nextReadCalled) {
+				Console.WriteLine("ReadAll aborting");
 				if (isRead && !nextReadCalled) {
 					nextReadCalled = true;
 					cnc.NextRead ();
@@ -237,8 +244,10 @@ namespace System.Net
 			if (!pending.WaitOne (ReadTimeout))
 				throw new WebException ("The operation has timed out.", WebExceptionStatus.Timeout);
 			lock (locker) {
-				if (totalRead >= contentLength)
+				if (totalRead >= contentLength) {
+					Console.WriteLine("ReadAll aborting inside lock without calling NextRead");
 					return;
+				}
 				
 				byte [] b = null;
 				int diff = readBufferSize - readBufferOffset;
@@ -289,6 +298,7 @@ namespace System.Net
 				nextReadCalled = true;
 			}
 
+			Console.WriteLine("ReadAll calling NextRead");
 			cnc.NextRead ();
 		}
 
@@ -330,6 +340,7 @@ namespace System.Net
 			AsyncCallback cb = cb_wrapper;
 			WebAsyncResult res = (WebAsyncResult) BeginRead (buffer, offset, size, cb, null);
 			if (!res.IsCompleted && !res.WaitUntilComplete (ReadTimeout, false)) {
+				Console.WriteLine("Read calling Close");
 				nextReadCalled = true;
 				cnc.Close (true);
 				throw new WebException ("The operation has timed out.", WebExceptionStatus.Timeout);
@@ -360,6 +371,7 @@ namespace System.Net
 
 			WebAsyncResult result = new WebAsyncResult (cb, state, buffer, offset, size);
 			if (totalRead >= contentLength) {
+				Console.WriteLine("BeginRead completed synchronously because content is fully read");
 				result.SetCompleted (true, -1);
 				result.DoCallback ();
 				return result;
@@ -376,6 +388,7 @@ namespace System.Net
 				if (size == 0 || totalRead >= contentLength) {
 					result.SetCompleted (true, copy);
 					result.DoCallback ();
+					Console.WriteLine("BeginRead completed synchronously from read buffer");
 					return result;
 				}
 				result.NBytes = copy;
@@ -390,6 +403,7 @@ namespace System.Net
 			if (!read_eof) {
 				result.InnerAsyncResult = cnc.BeginRead (request, buffer, offset, size, cb, result);
 			} else {
+				Console.WriteLine("BeginRead completed synchronously because of eof");
 				result.SetCompleted (true, result.NBytes);
 				result.DoCallback ();
 			}
@@ -417,6 +431,7 @@ namespace System.Net
 							pending.Set ();
 					}
 
+					Console.WriteLine("EndRead called Close due to error");
 					nextReadCalled = true;
 					cnc.Close (true);
 					result.SetCompleted (false, exc);
@@ -442,8 +457,12 @@ namespace System.Net
 					pending.Set ();
 			}
 
-			if (totalRead >= contentLength && !nextReadCalled)
+			if (totalRead >= contentLength && !nextReadCalled) {
+				Console.WriteLine("EndRead calling ReadAll");
 				ReadAll ();
+			} else {
+				Console.WriteLine("EndRead read {0} bytes, total {1} out of {2}", result.NBytes, totalRead, contentLength);
+			}
 
 			int nb = result.NBytes;
 			return (nb >= 0) ? nb : 0;
@@ -763,6 +782,8 @@ namespace System.Net
 
 		public override void Close ()
 		{
+			Console.WriteLine("Closing connection stream");
+
 			if (GetResponseOnClose) {
 				if (disposed)
 					return;
