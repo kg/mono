@@ -131,6 +131,7 @@ csproj-local: csproj-library csproj-test
 
 intermediate_clean=$(subst /,-,$(intermediate))
 csproj-library:
+	mkdir -p $(topdir)/../msvc/scripts/inputs; \
 	config_file=`basename $(LIBRARY) .dll`-$(intermediate_clean)$(PROFILE).input; \
 	case "$(thisdir)" in *"Facades"*) config_file=Facades_$$config_file;; *"legacy"*) config_file=legacy_$$config_file;; esac; \
 	echo $(thisdir):$$config_file >> $(topdir)/../msvc/scripts/order; \
