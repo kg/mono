@@ -1487,7 +1487,7 @@ variant_type		: /* EMPTY */
 
 custom_modifier_type
 			: primitive_type
-			| class_ref
+			| generic_class_ref
 			;
 
 field_decl		: D_FIELD repeat_opt field_attr type id at_opt init_opt semicolon_opt
