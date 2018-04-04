@@ -106,6 +106,8 @@ namespace Mono.ILASM {
                 public void MakeCustomModified (CodeGen code_gen, PEAPI.CustomModifier modifier,
                                 BaseTypeRef klass)
                 {
+                        System.Console.WriteLine("MakeCustomModified {0}", klass.FullName);
+
                         use_type_spec = true;
                         conversion_list.Add (ConversionMethod.MakeCustomModified);
                         conversion_list.Add (modifier);

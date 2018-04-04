@@ -1485,9 +1485,15 @@ variant_type		: /* EMPTY */
 			| K_CLSID
 			;
 
+new_class_ref
+            : K_CLASS generic_class_ref
+            | K_STRUCT generic_class_ref
+            | generic_class_ref
+            ;
+
 custom_modifier_type
 			: primitive_type
-			| generic_class_ref
+            | new_class_ref
 			;
 
 field_decl		: D_FIELD repeat_opt field_attr type id at_opt init_opt semicolon_opt
