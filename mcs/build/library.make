@@ -334,7 +334,9 @@ ifndef NO_BUILD
 all-local: $(makefrag)
 endif
 
+ifneq ($(MAKECMDGOALS),clean)
 -include $(makefrag)
+endif
 
 $(the_lib): $(the_libdir)/.stamp $(if $(PROFILE_PLATFORM),$(if $(filter $(HOST_PLATFORM),$(BUILD_PLATFORM)),$(topdir)/class/$(lib_dir)/$(PROFILE)/.stamp))
 
