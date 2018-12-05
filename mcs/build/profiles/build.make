@@ -58,7 +58,7 @@ LIBRARY_COMPILE = $(BOOT_COMPILE)
 #
 # Copy from rules.make because I don't know how to unset MCS_FLAGS
 #
-USE_MCS_FLAGS = /codepage:$(CODEPAGE) /nologo /noconfig /deterministic $(LOCAL_MCS_FLAGS) $(PLATFORM_MCS_FLAGS) $(PROFILE_MCS_FLAGS) $(MCS_FLAGS)
+USE_MCS_FLAGS = /shared:monomake /codepage:$(CODEPAGE) /nologo /noconfig /deterministic $(LOCAL_MCS_FLAGS) $(PLATFORM_MCS_FLAGS) $(PROFILE_MCS_FLAGS) $(MCS_FLAGS)
 
 .PHONY: profile-check do-profile-check
 profile-check:
