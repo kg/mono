@@ -18,6 +18,7 @@ AOT_OUT_DIR=$(realpath wasm-aot/$BENCHMARK)
 MONO_SDK_DIR=$(realpath ../../out)
 EMSCRIPTEN_SDK_DIR=$(realpath ../../builds/toolchains/emsdk)
 TEMPLATE_PATH=$(realpath ../runtime.js)
+ORIGINAL_JS=$(realpath $1/$1.js)
 
 
 echo \# Building benchmark $BENCHMARK...
@@ -41,4 +42,8 @@ echo \# WebAssembly \(AOT, node.js\) | tee -a $LOGFILE
 mono --debug $PACKAGER --linker --aot --builddir=$AOT_OUT_DIR/obj --appdir=$AOT_OUT_DIR $SRC_DIR/$BENCHMARK.dll --mono-sdkdir=$MONO_SDK_DIR --emscripten-sdkdir=$EMSCRIPTEN_SDK_DIR --template=$TEMPLATE_PATH
 ninja -v -C $AOT_OUT_DIR/obj >> $LOGFILE 2>&1
 node test-runner.js $BENCHMARK $AOT_OUT_DIR 2>&1 | tee -a $LOGFILE | grep \>\>\>
+if test -f "$ORIGINAL_JS"; then
+    echo \# JavaScript \(node.js\) | tee -a $LOGFILE
+    node $ORIGINAL_JS 2>&1 | tee -a $LOGFILE | grep \>\>\>
+fi
 echo \# Test run complete. Check $LOGFILE for any errors.

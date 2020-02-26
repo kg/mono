@@ -512,11 +512,10 @@ class Benchmark {
 };
 
 
-
 function main () {
-    const iterations = 75, warming_iterations = 20;
+    const iterations = 7, warming_iterations = 30;
 
-    console.log("Initializing...");
+    console.log(">>> Warming with", warming_iterations, "iterations...");
 
     var b = new Benchmark();
     var timings = new Array(iterations);
@@ -526,7 +525,7 @@ function main () {
 
     b.reset();
 
-    console.log("Running", iterations, "times...");
+    console.log(">>> Running", iterations, "times...");
 
     var started = Date.now();
 
@@ -534,9 +533,12 @@ function main () {
         var substarted = Date.now();
         b.runIteration();
         timings[i] = Date.now() - substarted;
+
+        // FIXME: These expectations are assuming some weird unstated set of conditions?
+        // b.validate();
     }
 
-    console.log("Elapsed", Date.now() - started);
+    console.log(">>> Elapsed", Date.now() - started);
     var tsum = 0, tmin = 999999999, tmax = 0;
 
     for (var i = 0; i < iterations; i++) {
@@ -545,9 +547,9 @@ function main () {
         tmax = Math.max(tmax, timings[i]);
     }
 
-    console.log("ms/iter avg =", tsum / iterations);
-    console.log("min =", tmin);
-    console.log("max =", tmax);
+    console.log(">>> ms/iter avg =", tsum / iterations);
+    console.log(">>> min =", tmin);
+    console.log(">>> max =", tmax);
 }
 
 main();

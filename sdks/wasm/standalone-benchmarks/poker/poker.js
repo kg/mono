@@ -394,12 +394,10 @@ class Benchmark {
     }
 }
 
-
-
 function main () {
-    const iterations = 300, warming_iterations = 60;
+    const iterations = 10, warming_iterations = 200;
 
-    console.log("Initializing...");
+    console.log(">>> Warming with", warming_iterations, "iterations...");
 
     var b = new Benchmark();
     var timings = new Array(iterations);
@@ -409,7 +407,7 @@ function main () {
 
     b.reset();
 
-    console.log("Running", iterations, "times...");
+    console.log(">>> Running", iterations, "times...");
 
     var started = Date.now();
 
@@ -422,7 +420,7 @@ function main () {
         // b.validate();
     }
 
-    console.log("Elapsed", Date.now() - started);
+    console.log(">>> Elapsed", Date.now() - started);
     var tsum = 0, tmin = 999999999, tmax = 0;
 
     for (var i = 0; i < iterations; i++) {
@@ -431,9 +429,9 @@ function main () {
         tmax = Math.max(tmax, timings[i]);
     }
 
-    console.log("ms/iter avg =", tsum / iterations);
-    console.log("min =", tmin);
-    console.log("max =", tmax);
+    console.log(">>> ms/iter avg =", tsum / iterations);
+    console.log(">>> min =", tmin);
+    console.log(">>> max =", tmax);
 }
 
 main();
