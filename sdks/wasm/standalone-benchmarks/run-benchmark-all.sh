@@ -1,5 +1,4 @@
 #!/bin/bash
-set -e
 set -u
 
 # &>> is used to pipe both stdout and stderr to a file in append mode

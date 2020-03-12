@@ -10,4 +10,6 @@
     <Compile Include="..\Program.cs" Link="Program.cs" />
   </ItemGroup>
 
+  <Import Project="..\Benchmark.props" />  
+
 </Project>

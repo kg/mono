@@ -1,0 +1,9 @@
+<Project>
+  <PropertyGroup Condition=" '$(Platform)' == 'WASM' ">
+    <DefineConstants>WASM;$(DefineConstants)</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup Condition=" '$(Platform)' == 'WASM' ">
+    <PackageReference Include="WebAssembly.Bindings" />
+  </ItemGroup>
+</Project>
