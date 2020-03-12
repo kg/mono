@@ -35,10 +35,10 @@ fi
 RUNTIME_DIR=${RUNTIME_DIR:="../builds"}
 
 PACKAGER=$(realpath ../packager.exe)
-SRC_DIR=$(realpath $BENCHMARK/bin/Debug/netcoreapp2.1)
+SRC_DIR=$(realpath $BENCHMARK/bin/WASM/Debug/netcoreapp2.1)
 TEMPLATE_PATH=$(realpath ../runtime.js)
 
 echo "Using runtime $RUNTIME_DIR"
-dotnet build $BENCHMARK
+dotnet build $BENCHMARK /p:Platform=WASM
 mono --debug $PACKAGER --wasm-runtime-path=$RUNTIME_DIR --out=wasm/$BENCHMARK $SRC_DIR/$BENCHMARK.dll --template=$TEMPLATE_PATH
 node test-runner.js $BENCHMARK wasm/$BENCHMARK

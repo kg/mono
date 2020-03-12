@@ -11,7 +11,7 @@ BENCHMARK=$(basename "$1")
 
 LOGFILE=$(realpath run-benchmark-all.$BENCHMARK.log)
 PACKAGER=$(realpath ../packager.exe)
-SRC_DIR=$(realpath $BENCHMARK/bin/Debug/netcoreapp2.1)
+SRC_DIR=$(realpath $BENCHMARK/bin/WASM/Debug/netcoreapp2.1)
 OUT_DIR=$(realpath wasm/$BENCHMARK)
 AOT_OUT_DIR=$(realpath wasm-aot/$BENCHMARK)
 MONO_SDK_DIR=$(realpath ../../out)
@@ -23,6 +23,7 @@ ORIGINAL_JS=$(realpath $1/$1.js)
 echo \# Building benchmark $BENCHMARK...
 rm -f $LOGFILE
 dotnet build $BENCHMARK >> $LOGFILE 2>&1
+dotnet build $BENCHMARK /p:Platform=WASM >> $LOGFILE 2>&1
 rm -f SRC_DIR/*.so
 echo \# Running benchmark $BENCHMARK... | tee -a $LOGFILE
 echo \# .NET Core | tee -a $LOGFILE

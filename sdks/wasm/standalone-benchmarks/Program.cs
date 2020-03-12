@@ -12,9 +12,9 @@ class Program {
             warming_iterations = Benchmark.WarmingIterationCount;
 
         #if WASM
-            Console.WriteLine ("Platform == WASM");
+            Console.WriteLine (">>> Platform == WASM");
         #else
-            Console.WriteLine ("Platform != WASM");
+            Console.WriteLine (">>> Platform != WASM");
         #endif
     
         WakeUp ();
