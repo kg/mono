@@ -10,3 +10,4 @@ builds/threads-release
 .configured
 src/pinvoke-tables-default-netcore.h
 icu/icu-git
+icu/data
