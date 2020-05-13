@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 
 # run build-icu.sh successfully first
-# data will be stored in $SCRIPTDIR/data
+# output will be $SCRIPTDIR/data/icudtl.dat
+# filters are loaded from $SCRIPTDIR/filters.json to filter out ICU data we don't need.
+# see https://github.com/unicode-org/icu/blob/master/docs/userguide/icu_data/buildtool.md for info on filters. replace filters.json with {} to not filter anything
 
 set -u
 set -e
@@ -16,8 +18,13 @@ ICUTMP="$SCRIPTDIR/data/temp"
 
 pushd $ICU4C
 
+# stray files from past builds may be remaining in the folders, which can cause problems
+#  if the resource filters are later updated to exclude them - so erase those folders
+rm -rf $ICUOUT_COMPONENT
+rm -rf $ICUTMP
+
 # this generates the individual data and resource files that will be combined into the package
-LD_LIBRARY_PATH=build/lib:$PATH PYTHONPATH=./python:${PYTHONPATH:-} python3 -m icutools.databuilder --mode=unix-exec --out_dir $ICUOUT_COMPONENT --tmp_dir $ICUTMP --src_dir ./data --tool_dir ./build/bin
+LD_LIBRARY_PATH=build/lib:$PATH PYTHONPATH=./python:${PYTHONPATH:-} python3 -m icutools.databuilder --mode=unix-exec --out_dir $ICUOUT_COMPONENT --tmp_dir $ICUTMP --src_dir ./data --tool_dir ./build/bin --filter_file $SCRIPTDIR/filters.json
 
 #  options:
 # [REQ] -p or --name        Set the data name

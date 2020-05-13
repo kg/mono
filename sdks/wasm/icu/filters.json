@@ -1,0 +1,9 @@
+{
+    "featureFilters": {
+        "confusables": "exclude",
+        "brkitr_rules": "exclude", 
+        "brkitr_dictionaries": "exclude", 
+        "brkitr_tree": "exclude", 
+        "translit": "exclude"
+    }
+}
