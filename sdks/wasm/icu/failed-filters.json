@@ -1,0 +1,18 @@
+{
+    "featureFilters": {
+        // Crashes at startup due to infinite recursion loading culture info
+        "coll_tree": "exclude",
+        "coll_ucadata": "exclude",
+        "locales_tree": "exclude",
+        "normalization": "exclude",
+        "brkitr_tree": "exclude", 
+
+        // Crashes at startup trying to parse timezone info in GetNFIValues
+        "zone_tree": "exclude",
+        // GetNFIValues
+        "curr_tree": "exclude",
+
+        // String.IndexOf breaks
+        "brkitr_rules": "exclude", 
+    }
+}

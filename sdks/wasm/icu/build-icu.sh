@@ -21,8 +21,10 @@ git reset --hard origin/master
 
 mkdir -p $ICU4C/build
 cd $ICU4C/build
-../configure
+ICU_DATA_FILTER_FILE=$SCRIPTDIR/filters.json ../configure --disable-renaming --disable-samples
 make
+
+# exit 1
 
 mkdir -p $ICU4C/wasm-build
 cd $ICU4C/wasm-build
@@ -31,7 +33,7 @@ mkdir -p $ICU4C/wasm-usr
 source $TOPDIR/sdks/builds/toolchains/emsdk/emsdk_env.sh
 
 # --disable-shared: If we try to build shared libraries the wasm toolchain will choke on things like soname
-emconfigure ../configure --prefix=$ICU4C/wasm-usr --enable-static --disable-shared CXXFLAGS=-Wno-sign-compare --with-cross-build=$ICU4C/build --with-data-packaging=archive --disable-extras --disable-renaming --disable-samples
+ICU_DATA_FILTER_FILE=$SCRIPTDIR/filters.json emconfigure ../configure --prefix=$ICU4C/wasm-usr --enable-static --disable-shared CXXFLAGS=-Wno-sign-compare --with-cross-build=$ICU4C/build --with-data-packaging=archive --disable-extras --disable-renaming --disable-samples
 
 # even though we set --with-cross-build and we used emconfigure, autoconf may not have decided we're cross-compiling, so forcibly set that
 sed -i -e 's/cross_compiling = .*/cross_compiling = yes/g' icudefs.mk
