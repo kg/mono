@@ -4,6 +4,8 @@
         "brkitr_dictionaries": "exclude",
         "translit": "exclude",
         "conversion_mappings": "exclude",
-        "zone_supplemental": "exclude"
+        "zone_supplemental": "exclude",
+        "unames": "exclude",
+        "unit_tree": "exclude"
     }
 }

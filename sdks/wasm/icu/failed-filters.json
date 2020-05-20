@@ -2,17 +2,29 @@
     "featureFilters": {
         // Crashes at startup due to infinite recursion loading culture info
         "coll_tree": "exclude",
+        // Crashes at startup due to infinite recursion loading culture info
         "coll_ucadata": "exclude",
-        "locales_tree": "exclude",
-        "normalization": "exclude",
-        "brkitr_tree": "exclude", 
 
         // Crashes at startup trying to parse timezone info in GetNFIValues
         "zone_tree": "exclude",
         // GetNFIValues
         "curr_tree": "exclude",
+        // GetNFIValues
+        "locales_tree": "exclude",
 
         // String.IndexOf breaks
         "brkitr_rules": "exclude", 
+        // String.IndexOf breaks
+        "brkitr_tree": "exclude", 
+
+        // 'dotnet run' deadlocks inside msbuild and allocates gigs of memory
+        "normalization": "exclude",
+
+        // Expected: French (France)
+        // Actual:   French (FR)
+        "region_tree": "exclude",
+
+        // failed to set the calendar on DTFI
+        "lang_tree": "exclude",
     }
 }
