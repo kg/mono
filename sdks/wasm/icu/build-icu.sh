@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# You will need an existing ICU checkout to perform a build. Run fetch-icu.sh to get one
+
 set -u
 set -e
 set -x
@@ -9,15 +11,6 @@ TOPDIR="$SCRIPTDIR/../../../"
 ICU4C="$SCRIPTDIR/icu-git/icu4c/source"
 
 pushd $SCRIPTDIR
-
-if [ ! -d "$SCRIPTDIR/icu-git" ] ; then
-    git clone https://github.com/unicode-org/icu.git icu-git
-fi
-cd icu-git
-git clean -xffd
-git checkout -f master
-git fetch origin
-git reset --hard origin/master
 
 mkdir -p $ICU4C/build
 cd $ICU4C/build
