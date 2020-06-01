@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 # You will need an existing ICU checkout to perform a build. Run fetch-icu.sh to get one
+# You can enable threading by passing -jN to build-icu.sh
 
 set -u
 set -e
@@ -14,8 +15,9 @@ pushd $SCRIPTDIR
 
 mkdir -p $ICU4C/build
 cd $ICU4C/build
-ICU_DATA_FILTER_FILE=$SCRIPTDIR/filters.json ../configure --disable-renaming --disable-samples --with-data-packaging=library
-make
+# note: without --disable-extras, make check will run the uconv tests and they will fail
+ICU_DATA_FILTER_FILE=$SCRIPTDIR/filters.json ../configure --disable-renaming --disable-samples --with-data-packaging=library --disable-extras
+make ${1-}
 
 # exit 1
 
