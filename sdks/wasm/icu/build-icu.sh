@@ -19,8 +19,6 @@ cd $ICU4C/build
 ICU_DATA_FILTER_FILE=$SCRIPTDIR/filters.json ../configure --disable-renaming --disable-samples --with-data-packaging=library --disable-extras
 make ${1-}
 
-# exit 1
-
 mkdir -p $ICU4C/wasm-build
 cd $ICU4C/wasm-build
 
@@ -28,7 +26,11 @@ mkdir -p $ICU4C/wasm-usr
 source $TOPDIR/sdks/builds/toolchains/emsdk/emsdk_env.sh
 
 # --disable-shared: If we try to build shared libraries the wasm toolchain will choke on things like soname
-ICU_DATA_FILTER_FILE=$SCRIPTDIR/filters.json emconfigure ../configure --prefix=$ICU4C/wasm-usr --enable-static --disable-shared CXXFLAGS=-Wno-sign-compare --with-cross-build=$ICU4C/build --disable-extras --disable-renaming --disable-samples --with-data-packaging=archive
+DEFINES="-DU_CHARSET_IS_UTF8=1 -DUCONFIG_NO_TRANSLITERATION=1 -DUCONFIG_NO_REGULAR_EXPRESSIONS=1 -DUCONFIG_NO_FILE_IO=1 -DUCONFIG_NO_LEGACY_CONVERSION=1 -DUCONFIG_NO_FILTERED_BREAK_ITERATION=1"
+# -fvisibility=hidden: set default visibility to hidden so the c++ symbols aren't exported. we'll manually export the C ones
+# DEFINES="-DU_CHARSET_IS_UTF8=1 -DUCONFIG_NO_TRANSLITERATION=1 -DUCONFIG_NO_REGULAR_EXPRESSIONS=1 -DUCONFIG_NO_FILE_IO=1 -DUCONFIG_NO_LEGACY_CONVERSION=1 -DUCONFIG_NO_FILTERED_BREAK_ITERATION=1 -DU_CXX_HIDDEN=1 -fvisibility=hidden -fvisibility-inlines-hidden -fmerge-all-constants"
+# would use LDFLAGS="--gc-sections" but emscripten does not support this
+ICU_DATA_FILTER_FILE=$SCRIPTDIR/filters.json emconfigure ../configure --prefix=$ICU4C/wasm-usr --enable-static --disable-shared CXXFLAGS="-fno-exceptions -Wno-sign-compare $DEFINES" CFLAGS="-fno-exceptions $DEFINES" CPPFLAGS="$DEFINES" --with-cross-build=$ICU4C/build --disable-extras --disable-renaming --disable-samples --with-data-packaging=archive
 
 # even though we set --with-cross-build and we used emconfigure, autoconf may not have decided we're cross-compiling, so forcibly set that
 sed -i -e 's/cross_compiling = .*/cross_compiling = yes/g' icudefs.mk
